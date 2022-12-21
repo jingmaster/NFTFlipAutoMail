@@ -10,7 +10,6 @@
 // @require     https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js
 // @require     https://cdn.staticfile.org/jquery/1.12.4/jquery.min.js
 // @require     http://libs.baidu.com/jquery/2.0.0/jquery.min.js
-// @require     https://smtpjs.com/v3/smtp.js
 // ==/UserScript==
 
 (function() {
@@ -29,20 +28,31 @@
     var rank = 6;
     //控制台输出前缀（自定义）
     var msg='您拥有的NFT 实时排名\n';
-    //定义邮件时间间隔(分钟)
+    //定义邮件时间间隔(分钟 推荐15分钟以上)
     var mailTime=30;
     //定义轮询间隔(毫秒，可自定义 推荐10000 1s=1000ms)
     var executeTime=10000;
-    //接收者邮箱(需要更改)
-    var to ='xxx@xx.com';
-    //发送者邮箱（需要跟你SMTP注册的邮箱地址一样）
-    var from = 'xxxx@xx.com';
-    //smtp服务秘钥（自己用自己的最好）
-    var secureToken='此处需要自己的秘钥！！！！！！！！！';
+    //接收者邮箱《需要用户更改》
+    var to ='xx@xx.com';
+    //发送者邮箱《需要用户更改》
+    var from = 'xx@xx.com';
+    //smtp服务秘钥（自行注册，自己用自己的最好 ）《需要用户更改》
+    var secureToken='';
     //邮件主题(自定义)
     var subject= 'Nft出货自动提醒！！！';
     //邮件内容(自定义)
     var mailBody = `<span>该出货了，该出货了<br/>`+'文字都能自定义'+`<br/></span>`;
+   //请不要修改以下代码
+    var Email = {
+        send: function (a)
+        { return new Promise(function (n, e)
+        { a.nocache = Math.floor(1e6 * Math.random() + 1), a.Action = "Send"; var t = JSON.stringify(a); Email.ajaxPost("https://smtpjs.com/v3/smtpjs.aspx?", t, function (e) { n(e) }) })
+        }, ajaxPost: function (e, n, t)
+        { var a = Email.createCORSRequest("POST", e); a.setRequestHeader("Content-type", "application/x-www-form-urlencoded"), a.onload = function () { var e = a.responseText; null != t && t(e) }, a.send(n) }
+         , ajax: function (e, n) { var t = Email.createCORSRequest("GET", e); t.onload = function () {
+        var e = t.responseText; null != n && n(e) }, t.send() }, createCORSRequest: function (e, n) {
+        var t = new XMLHttpRequest; return "withCredentials" in t ? t.open(e, n, !0) : "undefined" != typeof XDomainRequest ? (t = new XDomainRequest).open(e, n) : t = null, t } };
+
 
 
    setInterval(function () {
@@ -76,7 +86,7 @@
            if(timeInterval<mailTime){
                msg='您拥有的NFT 实时排名\n';
                isSend=false;
-               return;//发送间隔不到30分钟  不执行发送邮件
+               return;
            }
            let aftertime = new Date()
            startSendMailDate = aftertime.toLocaleString();
@@ -129,4 +139,5 @@ function sendEmailToMe() {
   }
 );
  }
+
 })();
